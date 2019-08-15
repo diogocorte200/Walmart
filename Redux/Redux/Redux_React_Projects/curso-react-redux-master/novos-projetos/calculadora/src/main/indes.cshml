@@ -1,0 +1,504 @@
+@using RestSharp.Validation
+@model itempreregister.Negocios.Filial
+
+@{ViewBag.Title = "Filial";}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Filial</title>
+    <link href="~/Content/Filial/Style.css" rel="stylesheet" />
+    <script src="~/Scripts/Filial/Filial.js"></script>
+</head>
+
+<body>
+
+    @using (Html.BeginForm("SalvarFilial", "Filial", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "formSolicitacao" }))
+    {
+
+        <div class="container">
+            <div class="row">
+                <ul class="breadcrumb">
+                    <li class="link"><a id="bcHome" style="text-decoration:none; color:#000"><span class="glyphicon glyphicon-home link" style="font-size:10px"></span> Home</a></li>
+                    <span class="glyphicon glyphicon-chevron-right" style="font-size:10px; margin:0 3px"></span>
+                    <li class="link"><a id="bcAnterior" style="text-decoration:none; color:#000"><span class="glyphicon glyphicon-list-alt" style="font-size:10px"></span> Cadastros</a></li>
+                    <span class="glyphicon glyphicon-chevron-right" style="font-size:10px; margin:0 3px"></span>
+                    <li class="link"><span class="glyphicon glyphicon-list-alt" style="font-size:10px"></span> Filial</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <legend>
+                <div style="background-color: #5F799B; color:#fff; padding-left:10px; font-size:15px">
+                    <span class="glyphicon glyphicon-list-alt" style="font-size:13px"></span> &nbsp; <span id="spanpais"> Filial</span>
+                </div>
+            </legend>
+
+            @if (ViewBag.AcaoAnterior != "SemAcesso")
+            {
+
+                <div class="row top-Margin text-left">
+
+                    <div class="span">
+
+                        @if (ViewBag.AcaoAnterior == "View")
+                        {
+                            <button name="button" value="salvar" disabled type="submit" class="btn btn-primary" id="btnSalvar">
+                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> &nbsp; Salvar
+                            </button>
+
+                            <button type="button" id="btnLimpar" name="limpar" value="limpar" class="btn btn-default" disabled>
+                                <span class=" glyphicon glyphicon-erase" aria-hidden="true"></span> &nbsp; Limpar
+                            </button>
+                        }
+                        else if (ViewBag.Novo)
+                        {
+                            <button name="button" value="salvar" type="submit" class="btn btn-primary" id="btnSalvar" onclick="Desbloqueia();">
+                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> &nbsp; Salvar
+                            </button>
+
+                            <button type="button" id="btnLimpar" name="limpar" value="limpar" class="btn btn-default" onclick="LimpaNovo();" }>
+                                <span class=" glyphicon glyphicon-erase" aria-hidden="true"></span> &nbsp; Limpar
+                            </button>
+                        }
+                        else
+                        {
+                            <button name="button" value="salvar" type="submit" class="btn btn-primary" onclick="Desbloqueia()" id="btnSalvar">
+                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> &nbsp; Salvar
+                            </button>
+
+                            <button type="button" id="btnLimpar" name="limpar" value="limpar" class="btn btn-default" onclick="LimpaExistente();" }>
+                                <span class=" glyphicon glyphicon-erase" aria-hidden="true"></span> &nbsp; Limpar
+                            </button>
+                        }
+
+                        <button type="button" id="btnVoltar" name="voltar" value="voltar" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-left"></span> &nbsp; Voltar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <br />
+
+                <div class="row">
+                    <div class="span3">
+                        <label>Código</label>
+                        @Html.TextBoxFor(model => model.cd_filial, new { id = "cdFilial", @class = "form-control inputLock Filial", @style = "width:90%;", @tabindex = 2, @type = "number", required = "required", @title = "Código" })
+                    </div>
+                    <div class="span9">
+                        <label>Descrição</label>
+                        @Html.TextBoxFor(model => model.ds_filial, (object)new { id = "dsFilial", @class = "form-control  ", @style = "width:90%;", @tabindex = 2, required = "required", @title = "Descrição" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span3">
+                        <div class="">
+                            <label>Região</label>
+                            @Html.DropDownListFor(model => model.id_regiao, new SelectList(Model.listaRegiao, "id_regiao", "ds_regiao"), "Selecione", new { @id = "cmbRegiao", @class = "form-control inputLock Filial", @style = "width:90%;", @tabindex = 3, required = "required", @title = "Região" })
+                        </div>
+                    </div>
+
+                    <div class="span3">
+                        <div class="">
+                            <label>UF</label>
+                            @Html.DropDownListFor(model => model.id_uf, new SelectList(Model.listaEstado.Where(m => m.id_regiao == Model.id_regiao), "id_uf", "ds_uf"), "Selecione", new { @id = "cmbEstados", @class = "form-control inputLock Filial", @style = "width:90%;", @tabindex = 3, required = "required", @title = "UF" })
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+
+                @*<div id="selecionaSubgrupo">
+                        <div class="row">
+                            <div class="span3">
+                                <label>Subgrupo</label>
+                            </div>
+                            <div class="span2">
+                            </div>
+                            <div class="span3">
+                                <label>Subgrupos</label>
+                            </div>
+                            <div class="span3">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="span3">
+                                @Html.TextBox("subgrupo", "", new { id = "subgrupo" })
+                            </div>
+                            <div class="span2 text-center">
+                                <button id="btnAddSubGrupo" type="button" id="btnAdicionarSubgrupo" onclick="adicionarSubgrupo()" name="button" value="adicionar_subgrupo" class="btn btn-primary" style="width:60%;">
+                                    <span class="glyphicon glyphicon-arrow-right"></span><br />Incluir
+                                </button>
+                                <p></p>
+                                <button type="button" id="btnRetirarSubgrupo" onclick="removerSubGrupo()" name="button" value="remover_subgrupo" class="btn btn-primary" style="width:60%;">
+                                    <span class="glyphicon glyphicon-arrow-left"></span><br />Retirar
+                                </button>
+                            </div>
+                            <div class="span3">
+
+                                @Html.ListBoxFor(model => model.subGrupo, new List<SelectListItem>(), new { style = "width:200px", @id = "lstSubgrupo" })
+                                @Html.HiddenFor(h => h.SelectedSubGrupo, new { id = "hid_selectedSubGrupo" })
+                            </div>
+                            <div class="span3" style="float: right;">
+                                @Html.CheckBoxFor(model => model.bl_permite_subgrupo_vazio, new { @onclick = "", id = "bl_permite_subgrupo_vazio", @tabindex = 4 }) Permite Subgrupo vazio
+                            </div>
+                        </div>
+                    </div>*@
+
+
+                <div id="selecionaSubgrupo">
+                    <div class="row">
+                        <div class="span3">
+                            <label>Subgrupo</label>
+                        </div>
+                        <div class="span2">
+                        </div>
+                        <div class="span3">
+                            <label>Subgrupos</label>
+                        </div>
+                        <div class="span3">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="span3">
+                            @Html.TextBox("subgrupo", "", new { id = "subgrupo" })
+                        </div>
+                        @*<div class="span4">
+                                @Html.TextBox("descSubgrupo", "", new { id = "descSubgrupo" })
+                            </div>*@
+                        <div class="span2 text-center">
+                            <button id="btnAddSubGrupo" type="button" id="btnAdicionarSubgrupo" onclick="adicionarSubgrupo()" name="button" value="adicionar_subgrupo" class="btn btn-primary" style="width:60%;">
+                                <span class="glyphicon glyphicon-arrow-right"></span><br />Incluir
+                            </button>
+                            <p></p>
+                            <button type="button" id="btnRetirarSubgrupo" onclick="removerSubGrupo()" name="button" value="remover_subgrupo" class="btn btn-primary" style="width:60%;">
+                                <span class="glyphicon glyphicon-arrow-left"></span><br />Retirar
+                            </button>
+                        </div>
+                        <div class="span3">
+
+                            @Html.ListBoxFor(model => model.subGrupo, new List<SelectListItem>(), new { style = "width:200px", @id = "lstSubgrupo" })
+                            @Html.HiddenFor(h => h.SelectedSubGrupo, new { id = "hid_selectedSubGrupo" })
+                        </div>
+                        <div class="span3" style="float: right;">
+                            @Html.CheckBoxFor(model => model.bl_permite_subgrupo_vazio, new { @onclick = "", id = "bl_permite_subgrupo_vazio", @tabindex = 4 }) Permite Subgrupo vazio
+                        </div>
+                    </div>
+                    @*<div class="span4">
+                            @Html.TextBox("descSubgrupo", "", new { id = "descSubgrupo" })
+                        </div>*@
+
+                    <div class="row">
+                        <div class="span4">
+                            <label>Desc Subgrupo</label>
+                            @Html.TextBox("descSubgrupo", "", new { id = "descSubgrupo" })
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                @*<div id="descricaoSubgrupo">
+                        <div class="row">
+                            <div class="span3">
+                                <label>Desc Subgrupo</label>
+                            </div>
+                            <div class="span2">
+                            </div>
+                            <div class="span3">
+                                <label>Desc Subgrupo</label>
+                            </div>
+                            <div class="span3">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="span3">
+                                @Html.TextBox("subgrupo", "", new { id = "subgrupo" })
+                            </div>
+                            <div class="span2 text-center">
+                                <button id="btnAddSubGrupo" type="button" id="btnAdicionarSubgrupo" onclick="adicionarSubgrupo()" name="button" value="adicionar_subgrupo" class="btn btn-primary" style="width:60%;">
+                                    <span class="glyphicon glyphicon-arrow-right"></span><br />Incluir
+                                </button>
+                                <p></p>
+                                <button type="button" id="btnRetirarSubgrupo" onclick="removerSubGrupo()" name="button" value="remover_subgrupo" class="btn btn-primary" style="width:60%;">
+                                    <span class="glyphicon glyphicon-arrow-left"></span><br />Retirar
+                                </button>
+                            </div>
+                            <div class="span3">
+
+                                @Html.ListBoxFor(model => model.subGrupo, new List<SelectListItem>(), new { style = "width:200px", @id = "lstSubgrupo" })
+                                @Html.HiddenFor(h => h.SelectedSubGrupo, new { id = "hid_selectedSubGrupo" })
+                            </div>
+                            <div class="span3" style="float: right;">
+                                @Html.CheckBoxFor(model => model.bl_permite_subgrupo_vazio, new { @onclick = "", id = "bl_permite_subgrupo_vazio", @tabindex = 4 }) Permite Subgrupo vazio
+                            </div>
+                        </div>
+                    </div>*@
+
+
+
+
+
+
+
+
+
+
+
+                <br />
+
+                <div id="selecionaDepartamento">
+
+                    <div class="row">
+                        <div class="span5">
+                            <label>Departamentos Disponíveis</label>
+                        </div>
+                        <div class="span2">
+                        </div>
+                        <div class="span5">
+                            <label>Departamentos Selecionados</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="span5">
+                            @Html.ListBox("DepartamentosDisponiveis", itempreregister.Controllers.FilialController.ListaDepartamentosDisponiveis, new { @class = " ListBoxUsuarios PerfisDisiponiveis", size = 20, id = "DepartamentosDisponiveis" })
+                        </div>
+
+                        <div class="span2 text-center">
+                            <br />
+                            <p></p>
+                            <br />
+                            @Html.HiddenFor(model => model.listaDepartamentoDisponivel, new { id = "hid_listaDepartamentos" })
+
+
+
+                            <button type="button" id="btnAdicionarDepartamento" name="button" value="adicionar_departamento_usuario" class="btn btn-primary" style="width:60%;" onclick="AdicionarDepartamentos()">
+                                <span class="glyphicon glyphicon-arrow-right"></span><br />Incluir
+                            </button>
+                            <p></p>
+                            <button type="button" id="btnRetirarDepartamento" name="button" value="remover_departamento_usuario" class="btn btn-primary" style="width:60%;" onclick="RemoverDepartamentos()">
+                                <span class="glyphicon glyphicon-arrow-left"></span><br />Retirar
+                            </button>
+
+                        </div>
+
+                        <div class="span5">
+                            @Html.ListBoxFor(model => model.listaDepartamentoUtilizado, itempreregister.Controllers.FilialController.ListaDepartamentosSelecionados, new { @title = "Departamentos", @class = "ListBoxUsuarios hid_departamentosUtilizados", size = 20, @id = "listaCdDepartamento" })
+                            @Html.HiddenFor(model => model.SelectedDepartamento, new { id = "hid_departamentosUtilizados" })
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+
+    }
+
+    @{
+
+        if (ViewBag.CodAlreadyExists)
+        {
+            <script type="text/javascript">
+                $("#txtError").html("<span>Código de filial já cadastrado!</span><br/>");
+                $("#ErrorAlert").delay(100).fadeIn();
+            </script>
+        }
+
+        if (ViewBag.FilialUtilizada)
+        {
+            <script type="text/javascript">
+                $("#modalLoading").modal("hide");
+                var msg = "@ViewBag.ListaDeFiliaisUtilizadas";
+                $("#txtError").html("<span>Não é possível editar a filial solicitada.<br/>A filial esta sendo utilizada pela seguinte solicitação.<br/>" + msg + "</span>");
+                $("#ErrorAlert").delay(100).fadeIn();
+            </script>
+        }
+
+        if (ViewBag.ErroNovaFilial)
+        {
+            <script type="text/javascript">
+                $("#txtError").html("<span>Código de filial tem que ser maior que 0 !</span><br/>");
+                $("#ErrorAlert").delay(100).fadeIn();
+            </script>
+        }
+
+        if (ViewBag.ErroDptoUtilizado)
+        {
+            <script type="text/javascript">
+                $("#txtError").html("<span>Campo Departamento deve ter pelo menos um Departamento selecionado!</span><br/>");
+                $("#ErrorAlert").delay(100).fadeIn();
+            </script>
+
+        }
+        if (ViewBag.ErroSubGrupo)
+        {
+            <script type="text/javascript">
+                $("#txtError").html("<span>Campo Subgrupos só pode estar vazio quando a opção 'Permite Subgrupo vazio' estiver selecionada!</span><br/>");
+                $("#ErrorAlert").delay(100).fadeIn();
+            </script>
+        }
+        if (ViewBag.Disabled)
+        {
+            <script type="text/javascript">
+                $("#btnAdicionarDepartamento").prop('disabled', true);
+                $("#btnRetirarDepartamento").prop('disabled', true);
+                $("#btnAddSubGrupo").prop('disabled', true);
+                $("#btnRetirarSubgrupo").prop('disabled', true);
+
+                $("#cmbRegiao").attr("style", "pointer-events: none;");
+                $('#cmbRegiao').css('background-color', '#eeeeee')
+
+                $("#cmbEstados").attr("style", "pointer-events: none;");
+                $('#cmbEstados').css('background-color', '#eeeeee')
+
+                $("#cmbRegiao").prop('disabled', true);
+                $("#cmbEstados").prop('disabled', true);
+                $("#dsFilial").prop('disabled', true);
+                $("#cdFilial").prop('disabled', true);
+                $("#subgrupo").prop('disabled', true);
+                $("#lstSubgrupo").prop('disabled', true);
+                $("#bl_permite_subgrupo_vazio").prop('disabled', true);
+                $("#listaCdDepartamento").prop('disabled', true);
+                $("#ltsDisponiveis").prop('disabled', true);
+                $("#DepartamentosDisponiveis").prop('disabled', true);
+            </script>
+        }
+        if (ViewBag.Editar != null && ViewBag.Editar)
+        {
+            <script type="text/javascript">
+                $("#cdFilial").prop('readonly', true);
+
+                $("#cmbRegiao").prop('readonly', true);
+                $("#cmbRegiao").attr("style", "pointer-events: none;");
+                $('#cmbRegiao').css('background-color', '#eeeeee')
+
+                $("#cmbEstados").prop('readonly', true);
+                $("#cmbEstados").attr("style", "pointer-events: none;");
+                $('#cmbEstados').css('background-color', '#eeeeee')
+
+                $(":submit").prop('value', 'Editar');
+            </script>
+        }
+
+        if (ViewBag.Editado != null && ViewBag.Editado)
+        {
+            <script type="text/javascript">
+                $("#txtSucess").html("<span>Filial atualizada com sucesso!</span><br/>");
+                $("#SucessAlert").delay(100).fadeIn();
+                $("#SucessAlert").delay(10000).fadeOut();
+
+                $("#cdFilial").prop('readonly', true);
+
+                $("#cmbRegiao").prop('disabled', true);
+                $("#cmbRegiao").attr("style", "pointer-events: none;");
+                $('#cmbRegiao').css('background-color', '#eeeeee')
+
+                $("#cmbEstados").prop('disabled', true);
+                $("#cmbEstados").attr("style", "pointer-events: none;");
+                $('#cmbEstados').css('background-color', '#eeeeee')
+
+                $(":submit").prop('value', 'Editar');
+            </script>
+        }
+
+        if (ViewBag.AcaoAnterior != null)
+        {
+            if (ViewBag.AcaoAnterior.Equals("Salvo"))
+            {
+                <script type="text/javascript">
+                    $("#txtSucess").html("<span>Filial cadastrada com sucesso!</span><br/>");
+                    $("#SucessAlert").delay(100).fadeIn();
+                    $("#SucessAlert").delay(10000).fadeOut();
+                    LimpaNovo();
+                </script>
+            }
+
+            else if (ViewBag.AcaoAnterior.Equals("Erro"))
+            {
+                <script type="text/javascript">
+                    $("#txtError").html("<span>Erro ao cadastrar filial!</span><br/>");
+                    $("#ErrorAlert").delay(100).fadeIn();
+
+                    $("#cdFilial").prop('readonly', true);
+
+                    $("#cmbRegiao").prop('disabled', true);
+                    $("#cmbRegiao").attr("style", "pointer-events: none;");
+                    $('#cmbRegiao').css('background-color', '#eeeeee')
+
+                    $("#cmbEstados").prop('disabled', true);
+                    $("#cmbEstados").attr("style", "pointer-events: none;");
+                    $('#cmbEstados').css('background-color', '#eeeeee')
+
+                    $(":submit").prop('value', 'Editar');
+                </script>
+
+            }
+            else if (ViewBag.AcaoAnterior.Equals("SemAcesso"))
+            {
+                <script type="text/javascript">
+                    $("#txtAccessAlert").html("<span>Usuário sem acesso a funcionalidade!</span><br/>");
+                    $("#AccessAlert").delay(100).fadeIn();
+                </script>
+            }
+            else if (ViewBag.AcaoAnterior.Equals("NaoExisteAD"))
+            {
+                string mensagens = string.Empty;
+                foreach (string mensagem in itempreregister.Controllers.ManutencaoSistemaController.listaValidacao)
+                {
+                    mensagens += mensagem;
+                }
+                <script type="text/javascript">
+                    $("#txtError").html("<span>Login de Usuário não encontrado no AD.</span> <br/>" + ' @mensagens' + "<br/>");
+                    $("#ErrorAlert").delay(100).fadeIn();
+                    $("#ErrorAlert").delay(10000).fadeOut();
+                </script>
+            }
+            else if (ViewBag.AcaoAnterior.Equals("Duplicidade"))
+            {
+                string mensagens = string.Empty;
+                foreach (string mensagem in itempreregister.Controllers.ManutencaoSistemaController.listaValidacao)
+                {
+                    mensagens += mensagem;
+                }
+                <script type="text/javascript">
+                    $("#txtError").html("<span>Usuário já cadastrado.</span> <br/>" + ' @mensagens' + "<br/>");
+                    $("#ErrorAlert").delay(100).fadeIn();
+                    $("#ErrorAlert").delay(10000).fadeOut();
+                </script>
+            }
+            else if (ViewBag.AcaoAnterior.Equals("Erro"))
+            {
+                string mensagens = string.Empty;
+                foreach (string mensagem in itempreregister.Controllers.ManutencaoSistemaController.listaValidacao)
+                {
+                    mensagens += mensagem;
+                }
+                <script type="text/javascript">
+                    $("#txtError").html("<span>Não foi possível salvar este Usuário.</span> <br/>" + ' @mensagens' + "<br/>");
+                    $("#ErrorAlert").delay(100).fadeIn();
+                    $("#ErrorAlert").delay(10000).fadeOut();
+                </script>
+            }
+        }
+    }
+
+</body>
+
+</html>
