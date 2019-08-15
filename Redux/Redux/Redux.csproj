@@ -25407,7 +25407,6 @@
     <None Include="Redux_React_Projects\calculadora\README.md" />
     <None Include="Redux_React_Projects\calculadora\src\fonts\RobotoMono-Thin.ttf" />
     <None Include="Redux_React_Projects\calculadora\yarn.lock" />
-    <None Include="Redux_React_Projects\curso-react-redux-master.zip" />
     <None Include="Redux_React_Projects\Documento\apostila-react-redux.pdf" />
     <None Include="Redux_React_Projects\Documento\Documentação_React-Redux.docx" />
   </ItemGroup>
