@@ -30700,6 +30700,7 @@
     <None Include="Redux_React_Projects\wmbr_ipr_app\itempreregister\itempreregister\bin\Massivos\Template - Criação de Item - Planilha do Fornecedor.xls" />
     <None Include="Redux_React_Projects\wmbr_ipr_app\itempreregister\itempreregister\bin\Massivos\Template - Manutencao de Item - Massivo.xlsx" />
     <None Include="Redux_React_Projects\wmbr_ipr_app\itempreregister\itempreregister\bin\Massivos\Template - Manutenção de Tipo de Item - Massivo.xlsx" />
+    <None Include="Redux_React_Projects\wmbr_pdc_app.zip" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Redux_React_Projects\calculadora\node_modules\%40babel\parser\typings\babel-parser.d.ts" />
